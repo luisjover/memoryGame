@@ -1,0 +1,342 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* cursor: none; */
+
+}
+
+@font-face {
+    font-family: 'Commodore';
+    src: url("src/fonts/Commodore_Pixelized_v1.2.ttf") format("truetype");
+}
+
+html {
+    font-family: Commodore;
+    color: whitesmoke;
+    font-weight: lighter;
+    letter-spacing: 2px;
+}
+
+body {
+    background-color: black;
+    height: 100vh;
+    width: 100%;
+    display: grid;
+    grid-template-rows: 1fr 5fr 1fr;
+}
+
+.bg-in {
+    background-image: url(src/img/monkey/bgclouds.gif);
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header img {
+    height: 100px;
+    position: absolute;
+    top: 30px;
+    opacity: 0;
+    transition: all .9s ease-in-out;
+
+}
+
+main {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+section {
+    display: flex;
+    background-image: url(src/img/monkey/bgwood.png);
+    border: 2px solid goldenrod;
+    border-radius: 20px;
+    margin: 50px 30px;
+    padding: 20px;
+    min-height: 260px;
+}
+
+.first-menu {
+    flex-direction: column;
+    justify-content: center;
+
+}
+
+button {
+    display: block;
+    font-family: Commodore;
+    color: whitesmoke;
+    background-color: transparent;
+    border-radius: 5px;
+    border: 1px solid goldenrod;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+h2 {
+    font-size: 1.4rem;
+    margin-bottom: 25px;
+}
+
+p {
+    margin-bottom: 20px;
+}
+
+
+
+
+.table {
+
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    perspective: 60rem;
+
+}
+
+.card {
+    background-image: url(src/img/monkey/bgoldpaper.gif);
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.6);
+    position: relative;
+    transform-style: preserve-3d;
+    transition: .5s;
+
+}
+
+
+.card-front,
+.card-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 10px;
+    backface-visibility: hidden;
+
+
+}
+
+.card-front {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotateY(-180deg);
+
+}
+
+.card-front img {
+    height: 56px;
+
+
+}
+
+.card-back {
+
+    height: 100%;
+    width: 100%;
+    background-image: url(src/img/monkey/groglogo.png);
+    background-position: center;
+    background-size: contain;
+}
+
+.flipped {
+    transform: rotateY(180deg);
+}
+
+.correct {
+    pointer-events: none;
+}
+
+
+
+.finish,
+.game-over {
+    flex-direction: column;
+    margin: 100px 30px;
+}
+
+.game-over div {
+    position: relative;
+    top: 152px;
+    left: 50px;
+}
+
+footer {
+
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.display-container {
+    display: flex;
+    column-gap: 100px;
+}
+
+footer h3 {
+    margin: 0 10px 10px;
+}
+
+footer p {
+    margin: 0 15px;
+}
+
+.timer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.moves {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.animation-container {
+    position: absolute;
+    left: -100px;
+    animation: phantom 4s cubic-bezier(.11, .47, 1, .63) 5s infinite normal none;
+    z-index: -1;
+}
+
+.animation-img {
+    height: 100px;
+    opacity: .6;
+}
+
+@keyframes phantom {
+    from {
+        left: -100px;
+        top: 80px;
+
+    }
+
+    to {
+        left: 400px;
+        top: 200px;
+
+
+    }
+}
+
+
+
+
+@media screen and (min-width: 462px) and (max-width: 1000px) {
+
+    header img {
+        height: 140px;
+    }
+
+    section {
+        max-width: 390px;
+        margin: 0 auto;
+    }
+
+    .finish,
+    .game-over {
+        margin: 100px auto;
+    }
+}
+
+
+
+@media screen and (min-width: 1000px) {
+
+    header img {
+        height: 220px;
+        top: 50px;
+    }
+
+    section {
+        max-width: 870px;
+        margin: 120px auto 0;
+    }
+
+    .finish,
+    .game-over {
+        margin: 120px auto 0;
+    }
+
+    .card {
+        width: 90px;
+        height: 90px;
+    }
+
+    .card-front img {
+        height: 85px;
+    }
+
+    .score-container {
+        column-gap: 300px;
+    }
+}
+
+/* -------------------------------- PERSONALIZED CURSOR --------------------------------*/
+
+@media (pointer: fine) {
+
+    *,
+    *::before,
+    *::after {
+        cursor: none;
+    }
+
+    .cursor {
+        display: grid;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
+        width: 3rem;
+        height: 3rem;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        align-items: center;
+        pointer-events: none;
+    }
+
+    .vertical {
+        height: 1rem;
+        width: .1rem;
+        background-color: whitesmoke;
+        justify-self: center;
+
+    }
+
+    .horizontal {
+        height: .1rem;
+        width: 1rem;
+        background-color: whitesmoke;
+        justify-self: center;
+
+    }
+
+    .center {
+
+        height: .6rem;
+        width: .6rem;
+
+
+
+    }
+
+    .cursor--click {
+        background-color: darkred;
+    }
+}
