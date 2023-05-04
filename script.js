@@ -7,18 +7,19 @@ function checkStartedGame() {
     const gameStarted = localStorage.getItem("gameStarted");
     if (gameStarted === null || gameStarted === "false") setMain();
     else {
-        const currentGameStateHTML = localStorage.getItem("currentGameState");
+        const currentGameState = JSON.parse(localStorage.getItem("currentGameState"));
         const storyMode = localStorage.getItem("storyMode");
         const currentMode = localStorage.getItem("currentMode");
         const currentTime = localStorage.getItem("currentTime");
         const maxTime = localStorage.getItem("maxTime");
         const currentMoves = localStorage.getItem("currentMoves");
         const maxMoves = localStorage.getItem("maxMoves");
-        recoverGame(currentGameStateHTML, storyMode, currentMode, currentTime, maxTime, currentMoves, maxMoves);
+        recoverGame(currentGameState, storyMode, currentMode, currentTime, maxTime, currentMoves, maxMoves);
     }
 }
 
-function recoverGame(currentGameStateHTML, storyMode, currentMode, currentTime, maxTime, currentMoves, maxMoves) {
+function recoverGame(currentGameState, storyMode, currentMode, currentTime, maxTime, currentMoves, maxMoves) {
+
 
     const body = document.querySelector("body");
     const main = document.querySelector("main");
@@ -30,10 +31,7 @@ function recoverGame(currentGameStateHTML, storyMode, currentMode, currentTime, 
     body.classList.add("bg-in");
     mainTitle.style.opacity = "0";
     let titleSrc = "";
-    console.log("entering recovery");
-    console.log(currentMode);
-    console.log(typeof (currentMode));
-    console.log(currentMode === "easy");                                                       //WHAAAAAATSSS HAPPENNIING HEEREEEE!!!!!!!!!!
+    //WHAAAAAATSSS HAPPENNIING HEEREEEE!!!!!!!!!!
     if (currentMode === "easy") titleSrc = "src/img/monkey/thesecretoftitle.png";
 
     else if (currentMode === "mid") titleSrc = "src/img/monkey/thecurseoftitle.png";
@@ -43,14 +41,41 @@ function recoverGame(currentGameStateHTML, storyMode, currentMode, currentTime, 
     changeTitle(titleSrc);
 
     //RECOVERING TABLE
-    main.insertAdjacentHTML("beforeend", currentGameStateHTML);
+
+    const table = document.createElement("section");
+    table.classList.add("table");
+    main.appendChild(table);
+    currentGameState.forEach(function (element) {
+        const card = document.createElement("div");
+        const cardFront = document.createElement("div");
+        const cardFrontImg = document.createElement("img");
+        const cardBack = document.createElement("div");
+        card.classList.add("card");
+        if (element.cardStatus === "flipped") card.classList.add("flipped", "correct");
+        cardFront.classList.add("card-front");
+        cardBack.classList.add("card-back");
+        cardFrontImg.src = element.src;
+        card.addEventListener("click", flipCard)
+        cardFront.appendChild(cardFrontImg);
+        card.appendChild(cardFront);
+        card.appendChild(cardBack);
+        table.appendChild(card);
+    })
+
+
+
+
+
+
+
+
 
     //RECOVERING EVENT LISTENERS
-    const cards = document.querySelectorAll(".card");
+    /*const cards = document.querySelectorAll(".card");
 
     cards.forEach(function (element) {
         element.addEventListener("click", flipCard);
-    });
+    });*/
     //RECOVERING MOVES DISPLAY
     const currentMovesDisplay = document.querySelector("#current-moves");
     const divBar = document.querySelector("#div-bar");
@@ -202,7 +227,7 @@ function setTable(mode) {
         mode = "easy";
     }
 
-    localStorage.setItem("currentMode", JSON.stringify(mode));
+    localStorage.setItem("currentMode", mode);
     startMovesCounter(mode);
     startTimer(mode);
 
@@ -259,9 +284,9 @@ function compareCards(cardsToCompare) {
 
 
     const pendingCards = document.querySelectorAll(".card:not(.correct)");
-    const currentMoves = JSON.parse(localStorage.getItem("currentMoves"));
-    const maxMoves = JSON.parse(localStorage.getItem("maxMoves"));
-    const currentMode = JSON.parse(localStorage.getItem("currentMode"));
+    const currentMoves = parseInt(localStorage.getItem("currentMoves"));
+    const maxMoves = parseInt(localStorage.getItem("maxMoves"));
+    const currentMode = parseInt(localStorage.getItem("currentMode"));
     if (currentMoves === maxMoves && pendingCards.length !== 0) {
         clearInterval(simpleTimeInterval);
 
@@ -316,20 +341,20 @@ function startMovesCounter(mode) {
     divBar.innerText = "/";
     maxMovesDisplay.innerText = maxMoves;
 
-    localStorage.setItem("currentMoves", JSON.stringify(currentMoves));
-    localStorage.setItem("maxMoves", JSON.stringify(maxMoves));
+    localStorage.setItem("currentMoves", currentMoves.toString());
+    localStorage.setItem("maxMoves", maxMoves.toString());
 }
 
 
 function updateMovesCounter() {
 
     const currentMovesDisplay = document.querySelector("#current-moves");
-    let currentMoves = JSON.parse(localStorage.getItem("currentMoves"));
+    let currentMoves = parseInt(localStorage.getItem("currentMoves"));
 
     currentMoves += 1;
 
     currentMovesDisplay.innerText = currentMoves;
-    localStorage.setItem("currentMoves", JSON.stringify(currentMoves));
+    localStorage.setItem("currentMoves", currentMoves.toString());
 }
 
 let simpleTimeInterval;
@@ -341,7 +366,7 @@ function startTimer(mode) {
     else if (mode === "hard") time = 100;
     else time = mode;
 
-    localStorage.setItem("maxTime", JSON.stringify(time));
+    localStorage.setItem("maxTime", time.toString());
 
     const timeOnDisplay = document.querySelector("#current-time");
     if (time >= 10) timeOnDisplay.innerText = `00:${time}`;
@@ -349,7 +374,7 @@ function startTimer(mode) {
 
     simpleTimeInterval = setInterval(() => {
         time--;
-        localStorage.setItem("currentTime", JSON.stringify(time));
+        localStorage.setItem("currentTime", time.toString());
         if (time >= 10) timeOnDisplay.innerText = `00:${time}`;
         else timeOnDisplay.innerText = `00:0${time}`;
 
@@ -446,9 +471,9 @@ function gameOver(cause) {
 
 function setRanking() {
     cleanMain();
-    const easyScore = JSON.parse(localStorage.getItem("easyScore"));
-    const midScore = JSON.parse(localStorage.getItem("midScore"));
-    const hardScore = JSON.parse(localStorage.getItem("hardScore"));
+    const easyScore = parseInt(localStorage.getItem("easyScore"));
+    const midScore = parseInt(localStorage.getItem("midScore"));
+    const hardScore = parseInt(localStorage.getItem("hardScore"));
 
     const totalScore = easyScore + midScore + hardScore;
 }
@@ -489,32 +514,45 @@ function shuffleCards(arr) {
 
 
 function checkStoryMode() {
-    const storyMode = JSON.parse(localStorage.getItem("storyMode"));
+    const storyMode = parseInt(localStorage.getItem("storyMode"));
     return storyMode;
 }
 
 function saveGameState() {
-    let currentGameState = document.querySelector("main");
-    let currentGameStateHTML = currentGameState.innerHTML;
-    localStorage.setItem("currentGameState", currentGameStateHTML);
+    const gameState = [];
+    const cards = document.querySelectorAll(".table .card");
+    const cardsImg = document.querySelectorAll(".table .card img");
+    for (let i = 0; i < cards.length; i++) {
+        let cardStatus = "normal";
+        if (cards[i].classList.contains("correct")) cardStatus = "flipped";
+        const cardState = {
+            cardStatus: cardStatus,
+            src: cardsImg[i].src
+        }
+
+        gameState.push(cardState)
+    }
+    localStorage.setItem("currentGameState", JSON.stringify(gameState));
 }
+
 
 function resetGameState() {
     localStorage.setItem("gameStarted", "false");
     localStorage.setItem("currentGameState", "");
 }
 
+
 function setScore(level) {
-    const maxMoves = JSON.parse(localStorage.getItem("maxMoves"));
-    const currentMoves = JSON.parse(localStorage.getItem("currentMoves"));
-    const currentTime = JSON.parse(localStorage.getItem("currentTime"));
+    const maxMoves = parseInt(localStorage.getItem("maxMoves"));
+    const currentMoves = parseInt(localStorage.getItem("currentMoves"));
+    const currentTime = parseInt(localStorage.getItem("currentTime"));
 
     const movePoints = maxMoves - currentMoves;
     const timePoints = currentTime;
 
     const totalPoints = movePoints + timePoints;
 
-    localStorage.setItem(`${level}Score`, JSON.stringify(totalPoints))
+    localStorage.setItem(`${level}Score`, totalPoints.toString());
 }
 
 function restartGame() {
